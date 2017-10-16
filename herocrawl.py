@@ -17,7 +17,10 @@ heroes = db.heroes
 
 
 class HeroSpider(scrapy.Spider):
-    name = 'dotaspider'
+    """
+    Generates heroes' information along with their skills.
+    """
+    name = 'herospider'
 
     def start_requests(self):
         urls = ['http://dota.wikia.com/wiki/Defense_of_the_Ancients_Wiki']
@@ -27,7 +30,6 @@ class HeroSpider(scrapy.Spider):
     def parse(self, response):
         for hero in response.xpath('//body//span[@class="character_icon"]/a/@href'):
             yield response.follow('http://dota.wikia.com' + str(hero.extract()), self.parse)
-            # yield {'heroe': 'http://dota.wikia.com' + str(hero.extract())}
 
         names = []
         lore = ''
@@ -91,5 +93,4 @@ class HeroSpider(scrapy.Spider):
         heroes.insert_one(mongo_hero)
 
         session.commit()
-
         session.close()
